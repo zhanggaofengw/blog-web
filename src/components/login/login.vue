@@ -4,7 +4,7 @@
             <h1 class="title">后台管理</h1>
             <el-input v-model="name" placeholder="请输入用户名">
             </el-input>
-            <el-input v-model="password" placeholder="请输入密码">
+            <el-input v-model="password" placeholder="请输入密码" type="password">
             </el-input>
             <el-button type="primary" :disabled="!name||!password" @click="login()">登录</el-button>
         </div>
@@ -13,7 +13,7 @@
 
 <script type="text/ecmascript-6">
     import crypto from 'crypto'
-    import {ERR_OK, SUCCESS_CODE, REEOR_CODE} from '../../common/js/config'
+    import {ERR_OK, SUCCESS_CODE, ERROR_CODE} from '../../common/js/config'
     export default {
         data() {
             return {
@@ -28,8 +28,8 @@
                 this.$ajax.get(`/login?name=${this.name}&password=${password}`).then((response) => {
                     if (ERR_OK === response.status) {
                         if (response.data.statueCode === SUCCESS_CODE) {
-
-                        } else if (response.data.statueCode === REEOR_CODE) {
+                            this.$router.push('/articleManage')
+                        } else if (response.data.statueCode === ERROR_CODE) {
                             this.$message({
                                 message: response.data.msg,
                                 type: 'error',
@@ -64,7 +64,7 @@
     .login-i {
         width: 300px;
         padding: 40px;
-        background: #57faff;
+        background: rgba(87, 250, 255, .8);
         border-radius: 5px;
     }
 

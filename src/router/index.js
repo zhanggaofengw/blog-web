@@ -12,6 +12,11 @@ const Login = (resolve) => {
     resolve(module)
   })
 }
+const ArticleManage = (resolve) => {
+  import('@/components/article-manage/article-manage').then((module) => {
+    resolve(module)
+  })
+}
 const routes = [
   {
     path: '',
@@ -21,6 +26,11 @@ const routes = [
     path: '/login',
     component: Login,
     meta: {title: '登录'}
+  },
+  {
+    path: '/articleManage',
+    component: ArticleManage,
+    meta: {title: '文章管理'}
   }
 ]
 const router = new Router({
