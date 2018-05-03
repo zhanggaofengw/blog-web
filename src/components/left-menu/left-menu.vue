@@ -1,10 +1,6 @@
 <template>
     <div class="left-menu">
-        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-            <el-radio-button :label="false">展开</el-radio-button>
-            <el-radio-button :label="true">收起</el-radio-button>
-        </el-radio-group>
-        <el-menu  class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse" background-color="#303133" text-color="#ffffff">
+        <el-menu  class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="collapse" background-color="#303133" text-color="#ffffff">
             <el-menu-item index="1">
                 <span slot="title">文章管理</span>
             </el-menu-item>
@@ -30,11 +26,33 @@
 </template>
 
 <script type="text/ecmascript-6">
+    import {mapGetters, mapMutations} from 'vuex'
     export default {
         data() {
             return {
-                isCollapse: true
-            };
+                w: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+            }
+        },
+        mounted() {
+            const that = this
+            window.onresize = () => {
+                return (() => {
+                    that.w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+                })()
+            }
+        },
+        created() {
+            if (this.w <= 992) {
+                if (this.collapse) {
+                    return
+                }
+                this.setCollapse(true)
+            } else {
+                if (!this.collapse) {
+                    return
+                }
+                this.setCollapse(false)
+            }
         },
         methods: {
             handleOpen(key, keyPath) {
@@ -42,12 +60,38 @@
             },
             handleClose(key, keyPath) {
                 console.log(key, keyPath);
+            },
+            ...mapMutations({
+                setCollapse: 'SET_COLLAPSE'
+            })
+        },
+        computed: {
+            ...mapGetters([
+                'collapse'
+            ])
+        },
+        watch: {
+            w() {
+                if (this.w <= 992) {
+                    if (this.collapse) {
+                        return
+                    }
+                    this.setCollapse(true)
+                } else {
+                    if (!this.collapse) {
+                        return
+                    }
+                    this.setCollapse(false)
+                }
             }
         }
     }
 </script>
 
 <style>
+    .left-menu .el-menu--collapse{
+        width: 0;
+    }
     .el-menu-vertical-demo:not(.el-menu--collapse) {
         width: 200px;
         height: 100%;
@@ -56,7 +100,13 @@
     .left-menu{
         position: fixed;
         left: 0;
-        top: 0;
+        top: 50px;
         bottom: 0;
+    }
+    .left-menu ul{
+        border: 0;
+    }
+    .left-menu .el-menu--collapse .el-menu-item,.left-menu .el-menu--collapse .el-submenu__title,.left-menu .el-menu--collapse .el-tooltip{
+        padding: 0 !important;
     }
 </style>

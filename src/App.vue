@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <blog-header></blog-header>
         <left-menu></left-menu>
         <keep-alive>
             <router-view></router-view>
@@ -9,9 +10,11 @@
 
 <script>
     import LeftMenu from './components/left-menu/left-menu.vue'
+    import BlogHeader from './components/header/header.vue'
     export default {
         components: {
-            LeftMenu
+            LeftMenu,
+            BlogHeader
         }
     }
 </script>
