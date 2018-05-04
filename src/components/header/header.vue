@@ -83,13 +83,16 @@
     .header .user span {
         font-weight: bold;
     }
-    .header .user>span, .header .user .set{
+
+    .header .user > span, .header .user .set {
         height: 100%;
     }
-    .header .user .set{
+
+    .header .user .set {
         display: flex;
         align-items: center;
     }
+
     .header .right .user:hover {
         color: #C0C4CC;
     }
@@ -108,5 +111,23 @@
 
     .icon-bar.icon-bar-t {
         margin-top: 4px;
+    }
+
+    @media screen and (max-width: 560px) {
+        .header {
+            height: 100px;
+        }
+
+        .left-logo {
+            width: 100%;
+        }
+
+        .header .right {
+            margin-left: 0;
+        }
+
+        .header .right .user {
+            height: 50px;
+        }
     }
 </style>

@@ -119,4 +119,10 @@
     .left-menu .el-menu--collapse .el-menu-item, .left-menu .el-menu--collapse .el-submenu__title, .left-menu .el-menu--collapse .el-tooltip {
         padding: 0 !important;
     }
+
+    @media screen and (max-width: 560px) {
+        .left-menu {
+            top: 100px;
+        }
+    }
 </style>

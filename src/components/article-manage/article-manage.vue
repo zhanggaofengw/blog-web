@@ -17,5 +17,9 @@
         margin-top: 50px;
         transition: all .3s linear;
     }
-
+    @media screen and (max-width: 560px) {
+        .right-container {
+            margin-top: 100px;
+        }
+    }
 </style>
