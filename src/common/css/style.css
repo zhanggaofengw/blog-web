@@ -81,3 +81,7 @@ body {
 img{
   vertical-align: bottom;
 }
+
+.cursor{
+  cursor: pointer;
+}
