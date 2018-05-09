@@ -1,6 +1,6 @@
 <template>
-  <div class="login">
-    <form name="login"  class="login-i">
+  <div class="login" @keyup.enter.stop="login()">
+    <form name="login" class="login-i">
       <h1 class="title">后台管理</h1>
       <el-input v-model="loginForm.name" placeholder="请输入用户名">
       </el-input>
@@ -11,14 +11,15 @@
         </el-input>
         <div v-html="svgCaptcha" class="svgCaptcha fl cursor" @click="getCaptcha"></div>
       </div>
-      <el-button type="primary" :disabled="!loginForm.name||!password||!loginForm.captcha" @click="login()">登录</el-button>
+      <el-button type="primary" :disabled="!loginForm.name||!password||!loginForm.captcha" @click="login()">登录
+      </el-button>
     </form>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import crypto from 'crypto'
-  import { stringify } from 'qs'
+  import {stringify} from 'qs'
   import {ERR_OK, SUCCESS_CODE, ERROR_CODE} from '../../common/js/config'
   export default {
     data() {
@@ -29,7 +30,10 @@
         captchaTime: ''
       }
     },
-    created() {
+    activated() {
+      this.loginForm = {}
+      this.password = ''
+      sessionStorage.setItem('userName', '')
       this.getCaptcha()
     },
     methods: {
@@ -38,9 +42,9 @@
         this.loginForm.password = md5.update(this.password).digest('hex')
         this.loginForm.time = this.captchaTime
         this.$ajax.get(`/login?${stringify(this.loginForm)}`).then((response) => {
-          console.log(response)
           if (ERR_OK === response.status) {
             if (response.data.statueCode === SUCCESS_CODE) {
+              sessionStorage.setItem('userName', this.loginForm.name)
               this.$router.push('/articleManage')
             } else if (response.data.statueCode === ERROR_CODE) {
               this.getCaptcha()
@@ -100,9 +104,11 @@
   .login-i .el-input {
     margin-bottom: 15px;
   }
-  .login-i .captcha.el-input,.svgCaptcha{
+
+  .login-i .captcha.el-input, .svgCaptcha {
     width: 50%;
   }
+
   .login-i .el-button {
     width: 100%;
   }

@@ -1,7 +1,7 @@
 <template>
     <div id="app">
-        <blog-header v-if="isLogin"></blog-header>
-        <left-menu v-if="isLogin"></left-menu>
+        <blog-header v-if="$route.path !== '/login' && $route.path !== '/'"></blog-header>
+        <left-menu v-if="$route.path !== '/login' && $route.path !== '/'"></left-menu>
         <keep-alive>
             <router-view></router-view>
         </keep-alive>
@@ -9,20 +9,13 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
     import LeftMenu from './components/left-menu/left-menu.vue'
     import BlogHeader from './components/header/header.vue'
     export default {
         components: {
             LeftMenu,
             BlogHeader
-        },
-        computed: {
-          ...mapGetters([
-            'isLogin'
-          ])
         }
-
     }
 </script>
 

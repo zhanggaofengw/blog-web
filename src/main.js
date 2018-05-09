@@ -7,6 +7,14 @@ import axios from './common/js/http'
 import store from './store'
 Vue.prototype.$ajax = axios
 Vue.config.productionTip = false
+router.beforeEach((to, from, next) => {
+  window.document.title = to.meta.title
+  if ((!sessionStorage.getItem('userName') || sessionStorage.getItem('userName') === ' ') && to.path !== '/login') {
+    next('/login')
+  } else {
+    next()
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({
