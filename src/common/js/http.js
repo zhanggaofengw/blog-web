@@ -5,6 +5,7 @@ import axios from 'axios'
 // axios 配置
 axios.defaults.timeout = 5000
 axios.defaults.baseURL = process.env.BASE_URL // 这是调用数据接口
+axios.defaults.withCredentials = true
 // http request 拦截器，通过这个，我们就可以把Cookie传到后台
 axios.interceptors.request.use(
   config => {

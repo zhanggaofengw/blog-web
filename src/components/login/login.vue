@@ -25,7 +25,8 @@
       return {
         loginForm: {},
         password: '',
-        svgCaptcha: ''
+        svgCaptcha: '',
+        captchaTime: ''
       }
     },
     created() {
@@ -35,12 +36,14 @@
       login() {
         let md5 = crypto.createHash('md5')
         this.loginForm.password = md5.update(this.password).digest('hex')
+        this.loginForm.time = this.captchaTime
         this.$ajax.get(`/login?${stringify(this.loginForm)}`).then((response) => {
           console.log(response)
           if (ERR_OK === response.status) {
             if (response.data.statueCode === SUCCESS_CODE) {
               this.$router.push('/articleManage')
             } else if (response.data.statueCode === ERROR_CODE) {
+              this.getCaptcha()
               this.$message({
                 message: response.data.msg,
                 type: 'error',
@@ -48,6 +51,7 @@
               })
             }
           } else {
+            this.getCaptcha()
             this.$message({
               message: '登录失败',
               type: 'error',
@@ -57,7 +61,8 @@
         })
       },
       getCaptcha() {
-        this.$ajax.get('/captcha').then((response) => {
+        this.captchaTime = (new Date()).valueOf()
+        this.$ajax.get(`/captcha?_t=${this.captchaTime}`).then((response) => {
           if (ERR_OK === response.status) {
             this.svgCaptcha = response.data
           }
