@@ -9,7 +9,7 @@
       <div>
         <el-input v-model="loginForm.captcha" placeholder="请输入验证码" class="captcha fl">
         </el-input>
-        <div v-html="svgCaptcha" class="svgCaptcha fl cursor" @click="getCaptcha"></div>
+        <div v-html="svgCaptcha" class="svgCaptcha fl pointer" @click="getCaptcha"></div>
       </div>
       <el-button type="primary" :disabled="!loginForm.name||!password||!loginForm.captcha" @click="login()">登录
       </el-button>

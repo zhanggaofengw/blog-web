@@ -20,5 +20,14 @@
 </script>
 
 <style>
+  .right-container {
+    padding: 10px;
+    margin-top: 50px;
+  }
 
+  @media screen and (max-width: 560px) {
+    .right-container {
+      margin-top: 100px;
+    }
+  }
 </style>

@@ -17,6 +17,11 @@ const ArticleManage = (resolve) => {
     resolve(module)
   })
 }
+const Label = (resolve) => {
+  import('@/components/label/label').then((module) => {
+    resolve(module)
+  })
+}
 const routes = [
   {
     path: '',
@@ -31,6 +36,11 @@ const routes = [
     path: '/articleManage',
     component: ArticleManage,
     meta: {title: '文章管理'}
+  },
+  {
+    path: '/label',
+    component: Label,
+    meta: {title: '分类/标签管理'}
   }
 ]
 const router = new Router({
