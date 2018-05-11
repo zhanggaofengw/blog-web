@@ -13,7 +13,7 @@
             :disabled="item.disabled">
           </el-option>
         </el-select>
-        <el-button type="primary" @click="changeSortsOrTags(1)">确定</el-button>
+        <el-button type="primary" @click="changeSortsOrTags(1)" :disabled="!sortsValue.length">确定</el-button>
         <div>
           <el-tag closable :color="item.color" size="medium" :type="'danger'" v-for="item, index in  articlesSorts"
                   :key="item._id" @click.native="" @close="handleClose(item._id,index,1)" class="publish-articles-sort">
@@ -31,7 +31,7 @@
             :disabled="item.disabled">
           </el-option>
         </el-select>
-        <el-button type="primary" @click="changeSortsOrTags(2)">确定</el-button>
+        <el-button type="primary" @click="changeSortsOrTags(2)" :disabled="!tagsValue.length">确定</el-button>
         <div>
           <el-tag closable :color="item.color" size="medium" :type="'danger'" v-for="item, index in  articlesTags"
                   :key="item._id" @click.native="" @close="handleClose(item._id,index,2)" class="publish-articles-sort">
