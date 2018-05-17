@@ -56,8 +56,8 @@ export function get(url, params = {}) {
           'Accept-Language': 'zh-CN,zh;q=0.8,gl;q=0.6,zh-TW;q=0.4',
           Connection: 'keep-alive',
           'Content-Type': 'application/x-www-form-urlencoded',
-          Host: '192.168.1.6:8888',
-          Referer: 'http://192.168.1.6:8888'
+          Host: process.env.BASE_URL,
+          Referer: `http:${process.env.BASE_URL}`
         },
         params: params
       })
@@ -84,8 +84,8 @@ export function post(url, data = {}) {
           'Accept-Language': 'zh-CN,zh;q=0.8,gl;q=0.6,zh-TW;q=0.4',
           Connection: 'keep-alive',
           'Content-Type': 'application/x-www-form-urlencoded',
-          Host: '192.168.1.6:8888',
-          Referer: 'http://192.168.1.6:8888'
+          Host: process.env.BASE_URL,
+          Referer: `http:${process.env.BASE_URL}`
         }
       })
       .then(response => {

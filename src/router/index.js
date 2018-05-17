@@ -1,11 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-import '@/common/css/style.css'
 
 Vue.use(Router)
-Vue.use(ElementUI)
 
 const Login = (resolve) => {
   import('@/components/login/login').then((module) => {
@@ -54,6 +50,7 @@ const routes = [
   }
 ]
 const router = new Router({
+  base: '/blogWeb/',
   mode: 'history',
   linkActiveClass: 'active',
   routes: routes

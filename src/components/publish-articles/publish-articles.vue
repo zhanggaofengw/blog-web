@@ -40,6 +40,22 @@
         </div>
       </div>
     </div>
+    <div class="articles">
+      <div ref="editor" style="text-align:left"></div>
+    </div>
+    <div class="articles-footer">
+      <div class="control">
+        <el-switch
+          v-model="comment"
+          active-text="开启评论"
+          inactive-text="关闭评论">
+        </el-switch>
+      </div>
+      <div class="articles-footer-r fr">
+        <el-button size="small">返回列表</el-button>
+        <el-button type="primary" size="small">保存文章</el-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -47,6 +63,7 @@
   import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
   import PageHeader from '../../base/page-header/page-header.vue'
   import {ERR_OK, SUCCESS_CODE} from '../../common/js/config'
+  import E from 'wangeditor'
   const SORT = 1
   const TAG = 2
   export default {
@@ -58,7 +75,9 @@
         articlesSorts: [],
         tagsValue: [],
         articlesTags: [],
-        tagList: []
+        tagList: [],
+        comment:  true,
+        editorContent: ''
       }
     },
     created() {
@@ -126,6 +145,15 @@
         })
       }
     },
+    mounted() {
+      const editor = new E(this.$refs.editor)
+      editor.customConfig.onchange = (html) => {
+        this.editorContent = html
+      }
+      editor.customConfig.uploadImgServer = `http:${process.env.BASE_URL}/uploadImg`
+      editor.customConfig.uploadFileName = 'uploadImg'
+      editor.create()
+    },
     components: {
       PageHeader
     }
@@ -147,5 +175,9 @@
 
   .articles-tag .el-input__inner, .articles-sort .el-input__inner {
     width: 300px;
+  }
+
+  .articles-footer{
+    margin: 10px 0;
   }
 </style>
