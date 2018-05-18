@@ -10,10 +10,7 @@ axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   config => {
     // const token = getCookie('session') // 获取Cookie
-    config.data = JSON.stringify(config.data)
-    config.headers = {
-      'Content-Type': 'application/x-www-form-urlencoded' // 设置跨域头部
-    }
+    config.data = config.data
     // if (token) {
     //  config.params = {'token': token} // 后台接收的参数，后面我们将说明后台如何接收
     // }
@@ -51,14 +48,6 @@ export default axios
 export function get(url, params = {}) {
   return new Promise((resolve, reject) => {
     axios.get(url, {
-        headers: {
-          Accept: '*/*',
-          'Accept-Language': 'zh-CN,zh;q=0.8,gl;q=0.6,zh-TW;q=0.4',
-          Connection: 'keep-alive',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Host: process.env.BASE_URL,
-          Referer: `http:${process.env.BASE_URL}`
-        },
         params: params
       })
       .then(response => {
@@ -80,12 +69,7 @@ export function post(url, data = {}) {
   return new Promise((resolve, reject) => {
     axios.post(url, data, {
         headers: {
-          Accept: '*/*',
-          'Accept-Language': 'zh-CN,zh;q=0.8,gl;q=0.6,zh-TW;q=0.4',
-          Connection: 'keep-alive',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Host: process.env.BASE_URL,
-          Referer: `http:${process.env.BASE_URL}`
+          'Content-Type': 'application/json'
         }
       })
       .then(response => {

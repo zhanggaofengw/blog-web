@@ -2,9 +2,7 @@
     <div id="app">
         <blog-header v-if="$route.path !== '/login' && $route.path !== '/'"></blog-header>
         <left-menu v-if="$route.path !== '/login' && $route.path !== '/'"></left-menu>
-        <keep-alive>
-            <router-view></router-view>
-        </keep-alive>
+        <router-view></router-view>
     </div>
 </template>
 

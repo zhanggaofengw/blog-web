@@ -50,6 +50,7 @@
 <style>
   .header {
     position: fixed;
+    z-index: 101;
     top: 0;
     width: 100%;
     height: 50px;
