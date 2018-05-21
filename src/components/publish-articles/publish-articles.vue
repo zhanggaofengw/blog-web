@@ -56,9 +56,12 @@
       </div>
       <div class="article-footer-r fr">
         <el-button size="small">返回列表</el-button>
-        <el-button type="primary" size="small" @click="submit()"
+        <el-button type="primary" size="small" @click="submit(save)"
                    :disabled="article.articleTags.length===0||article.articleSorts.length===0||!editorContent||!article.articleTitle">
           保存文章
+        </el-button>
+        <el-button type="warning" size="small" @click="submit(draft)">
+          存为草稿
         </el-button>
       </div>
     </div>
@@ -73,6 +76,8 @@
   import E from 'wangeditor'
   const SORT = 1
   const TAG = 2
+  const DRAFT = 0 //存为草稿
+  const SAVE = 1 //保存
   export default {
     mixins: [marginMixin],
     data() {
@@ -90,15 +95,18 @@
     },
     created() {
       this.queryTag()
+      this.save = SAVE
+      this.draft = DRAFT
     },
     methods: {
-      submit() {
+      submit(type) {
+        this.article.type = type
         this.article.content = this.editorContent
+        this.article.tagAndSort = this.article.articleSorts.concat(this.article.articleTags)
         this.article.sortList = this.selectId(this.article.articleSorts)
         this.article.tagList = this.selectId(this.article.articleTags)
         //1、开启评论  0、关闭评论
         this.comment ? this.article.comment = 1 : this.article.comment = 0
-        console.log(this.article)
         this.addArticle()
       },
       queryTag() {

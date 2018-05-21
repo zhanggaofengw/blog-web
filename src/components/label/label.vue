@@ -202,20 +202,20 @@
           this.deleteTag(item._id)
         }).catch(() => {
         })
+      },
+      filterLabel(type) {
+        let self = this
+        return self.tagList.filter(function (tag) {
+          return tag.category == type
+        })
       }
     },
     computed: {
       sorts: function () {
-        var self = this
-        return self.tagList.filter(function (tag) {
-          return tag.category == SORT
-        })
+        return this.filterLabel(SORT)
       },
       tags: function () {
-        var self = this
-        return self.tagList.filter(function (tag) {
-          return tag.category == TAG
-        })
+        return this.filterLabel(TAG)
       }
     },
     components: {

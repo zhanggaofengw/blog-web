@@ -30,7 +30,7 @@
         captchaTime: ''
       }
     },
-    activated() {
+    created() {
       this.loginForm = {}
       this.password = ''
       sessionStorage.setItem('userName', '')
