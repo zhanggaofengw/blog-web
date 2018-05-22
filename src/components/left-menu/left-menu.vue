@@ -1,13 +1,10 @@
 <template>
   <div class="left-menu">
-    <el-menu class="el-menu-vertical-demo"  :collapse="collapse"
-             :default-active="$route.path" :router="true"
+    <el-menu class="el-menu-vertical-demo" :collapse="collapse"
+             :default-active="defaultActive" :router="true"
              background-color="#303133" text-color="#ffffff">
       <el-menu-item :index="'/articleManage'">
         <span slot="title">文章管理</span>
-      </el-menu-item>
-      <el-menu-item index="/publishArticles">
-        <span slot="title">发布文章</span>
       </el-menu-item>
       <el-menu-item index="3">
         <span slot="title">用户管理</span>
@@ -59,7 +56,10 @@
     computed: {
       ...mapGetters([
         'collapse'
-      ])
+      ]),
+      defaultActive () {
+        return this.$route.path.lastIndexOf('/') === 0 ? this.$route.path : this.$route.meta.activeMenu
+      }
     },
     watch: {
       collapse() {

@@ -1,6 +1,7 @@
 <template>
   <div class="article right-container" ref="rightContainer">
     <page-header :page-title="$route.meta.title"></page-header>
+    <el-button type="primary" size="small" class="fr addArticle" @click="addArticle()">添加文章</el-button>
     <div>
     </div>
     <el-table
@@ -19,23 +20,24 @@
       >
       </el-table-column>
       <el-table-column
-        prop=""
+        prop="pageViews"
         label="浏览量">
       </el-table-column>
       <el-table-column
-        prop="tagAndSort"
-        label="所属分类">
+        prop="articleSorts"
+        label="所属分类"
+        align="center">
         <template slot-scope="scope">
-          <span v-for="item, index in scope.row.tagAndSort" :key="item._id"
-                v-if="item.category == 1">{{item.name}}</span>
+          <span class="sort" v-for="item, index in scope.row.articleSorts"
+                :key="item._id">{{item.name}}</span>
         </template>
       </el-table-column>
       <el-table-column
-        prop="tagAndSort"
-        label="所属标签">
+        prop="articleTags"
+        label="所属标签"
+        align="center">
         <template slot-scope="scope">
-          <span v-for="item, index in scope.row.tagAndSort" :key="item._id"
-                v-if="item.category == 2">{{item.name}}</span>
+          <span class="tag" v-for="item, index in scope.row.articleTags" :key="item._id">{{item.name}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -48,14 +50,17 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="articleContent, articleTitle, _id"
         label="操作"
         width="300"
         align="center"
       >
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" size="small">编辑</el-button>
+          <el-button type="primary" icon="el-icon-edit" size="small" @click="edit(scope.row._id)">编辑</el-button>
           <el-button type="danger" icon="el-icon-delete" size="small">删除</el-button>
-          <el-button type="warning" icon="el-icon-search" size="small">预览</el-button>
+          <el-button type="warning" icon="el-icon-search" size="small"
+                     @click="preview(scope.row.articleContent, scope.row.articleTitle)">预览
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -85,10 +90,20 @@
             if (response.data.statueCode === SUCCESS_CODE) {
               this.articleList = response.data.articleList
               console.log(this.articleList)
-
             }
           }
         })
+      },
+      preview(articleContent, articleTitle) {
+        this.$alert(articleContent, articleTitle, {
+          dangerouslyUseHTMLString: true
+        })
+      },
+      addArticle() {
+        this.$router.push('/publishArticles/add/null')
+      },
+      edit(id) {
+        this.$router.push(`/publishArticles/update/${id}`)
       }
     },
     components: {
@@ -98,5 +113,11 @@
 </script>
 
 <style>
+  .addArticle {
+    margin-top: -36px;
+  }
 
+  .el-table__body .sort, .el-table__body .tag {
+    padding-right: 5px;
+  }
 </style>

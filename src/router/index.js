@@ -44,9 +44,9 @@ const routes = [
     meta: {title: '分类/标签管理'}
   },
   {
-    path: '/publishArticles',
+    path: '/publishArticles/:addOrUpdate/:id',
     component: PublishArticles,
-    meta: {title: '发布文章'}
+    meta: {title: '发布文章',activeMenu:'/articleManage'}
   }
 ]
 const router = new Router({

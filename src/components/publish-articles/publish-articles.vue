@@ -1,6 +1,9 @@
 <template>
   <div class="publish-article right-container" ref="rightContainer">
-    <page-header :page-title="$route.meta.title"></page-header>
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/articleManage' }">文章管理</el-breadcrumb-item>
+      <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
+    </el-breadcrumb>
     <form name="articleForm"></form>
     <div class="article-title">
       <el-input v-model="article.articleTitle" placeholder="请输入文章标题"></el-input>
@@ -70,7 +73,6 @@
 
 <script type="text/ecmascript-6">
   import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
-  import PageHeader from '../../base/page-header/page-header.vue'
   import {ERR_OK, SUCCESS_CODE, ERROR_CODE} from '../../common/js/config'
   import {stringify} from 'qs'
   import E from 'wangeditor'
@@ -97,14 +99,20 @@
       this.queryTag()
       this.save = SAVE
       this.draft = DRAFT
+      if (this.$route.params.addOrUpdate === 'add') {
+        this.title = '添加文章'
+      } else {
+        this.title = '编辑文章'
+        this.$nextTick(() => {
+          this.queryArticle(this.$route.params.id)
+        })
+      }
+
     },
     methods: {
       submit(type) {
         this.article.type = type
         this.article.content = this.editorContent
-        this.article.tagAndSort = this.article.articleSorts.concat(this.article.articleTags)
-        this.article.sortList = this.selectId(this.article.articleSorts)
-        this.article.tagList = this.selectId(this.article.articleTags)
         //1、开启评论  0、关闭评论
         this.comment ? this.article.comment = 1 : this.article.comment = 0
         this.addArticle()
@@ -114,6 +122,16 @@
           if (ERR_OK === response.status) {
             if (response.data.statueCode === SUCCESS_CODE) {
               this.tagList = response.data.tagList
+            }
+          }
+        })
+      },
+      queryArticle(id) {
+        this.$ajax.get(`/article/query?id=${id}`).then((response) => {
+          if (ERR_OK === response.status) {
+            if (response.data.statueCode === SUCCESS_CODE) {
+              this.article = response.data.articleList[0]
+              console.log(this.article)
             }
           }
         })
@@ -167,13 +185,6 @@
           })
         })
       },
-      selectId(list) {
-        let array = []
-        list.forEach(function (item) {
-          array.push(item._id)
-        })
-        return array
-      },
       handleClose(id, index, type) {
         let arr = []
         if (SORT === type) {
@@ -214,14 +225,15 @@
       editor.customConfig.uploadImgServer = `http:${process.env.BASE_URL}/uploadImg`
       editor.customConfig.uploadFileName = 'uploadImg'
       editor.create()
-    },
-    components: {
-      PageHeader
     }
   }
 </script>
 
 <style>
+  .el-breadcrumb {
+    padding: 10px 0;
+  }
+
   .publish-article-sort.el-tag {
     margin: 12px 5px 0 0;
   }
