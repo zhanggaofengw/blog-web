@@ -15,7 +15,11 @@
 </script>
 
 <style>
-  .page-header{
+  .page-header {
     padding: 10px 0;
+  }
+
+  .page-title {
+    font-weight: bold;
   }
 </style>

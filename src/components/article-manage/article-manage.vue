@@ -1,6 +1,15 @@
 <template>
   <div class="article right-container" ref="rightContainer">
-    <page-header :page-title="$route.meta.title"></page-header>
+    <el-col :sm="4" :xs="24">
+      <page-header :page-title="$route.meta.title"></page-header>
+    </el-col>
+    <el-col :sm="{span:16, offset:4}" :xs="24">
+      <div class="queryArticle">
+        <el-input placeholder="请输入文章标题" v-model="param" class="input-with-select" size="medium">
+          <el-button slot="append" icon="el-icon-search" @click="currentPage=1;queryArticleList()"></el-button>
+        </el-input>
+      </div>
+    </el-col>
     <el-button type="primary" size="small" class="fr addArticle" @click="addArticle()">添加文章</el-button>
     <div>
     </div>
@@ -64,31 +73,46 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :pageSize=pageSize
+      :total=pageCount
+      :currentPage=currentPage
+      @current-change="handleCurrentChange"
+      v-if="pageCount>0&&pageCount>pageSize"
+    >
+    </el-pagination>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
   import PageHeader from '../../base/page-header/page-header.vue'
-  import {ERR_OK, SUCCESS_CODE} from '../../common/js/config'
+  import {ERR_OK, SUCCESS_CODE, PAGESIZE} from '../../common/js/config'
   const SORT = 1
   const TAG = 2
   export default {
     mixins: [marginMixin],
     data() {
       return {
-        articleList: []
+        articleList: [],
+        param: '',
+        currentPage: 1,
+        pageCount: 0
       }
     },
     created () {
+      this.pageSize = PAGESIZE
       this.queryArticleList()
     },
     methods: {
       queryArticleList() {
-        this.$ajax.get('/article/query').then((response) => {
+        this.$ajax.get(`/article/query?param=${this.param}&currentPage=${this.currentPage}&pageSize=${this.pageSize}`).then((response) => {
           if (ERR_OK === response.status) {
             if (response.data.statueCode === SUCCESS_CODE) {
               this.articleList = response.data.articleList
+              this.pageCount = response.data.rows
               console.log(this.articleList)
             }
           }
@@ -104,6 +128,10 @@
       },
       edit(id) {
         this.$router.push(`/publishArticles/update/${id}`)
+      },
+      handleCurrentChange(page) {
+        this.currentPage = page
+        this.queryArticleList()
       }
     },
     components: {
@@ -114,10 +142,24 @@
 
 <style>
   .addArticle {
-    margin-top: -36px;
+    margin: 10px 0;
+  }
+
+  .el-message-box {
+    width: 80%;
+    min-width: 420px;
+  }
+
+  .el-pagination {
+    margin-top: 10px;
+    text-align: right;
   }
 
   .el-table__body .sort, .el-table__body .tag {
     padding-right: 5px;
+  }
+
+  .article .el-pagination.is-background .btn-next, .article .el-pagination.is-background .btn-prev, .article .el-pagination.is-background .el-pager li {
+    background: #fff;
   }
 </style>

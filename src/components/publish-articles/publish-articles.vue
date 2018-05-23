@@ -58,7 +58,7 @@
         </el-switch>
       </div>
       <div class="article-footer-r fr">
-        <el-button size="small">返回列表</el-button>
+        <el-button size="small" @click="back()">返回列表</el-button>
         <el-button type="primary" size="small" @click="submit(save)"
                    :disabled="article.articleTags.length===0||article.articleSorts.length===0||!editorContent||!article.articleTitle">
           保存文章
@@ -101,8 +101,10 @@
       this.draft = DRAFT
       if (this.$route.params.addOrUpdate === 'add') {
         this.title = '添加文章'
+        this.url = '/article/add'
       } else {
         this.title = '编辑文章'
+        this.url = '/article/update'
         this.$nextTick(() => {
           this.queryArticle(this.$route.params.id)
         })
@@ -115,7 +117,7 @@
         this.article.content = this.editorContent
         //1、开启评论  0、关闭评论
         this.comment ? this.article.comment = 1 : this.article.comment = 0
-        this.addArticle()
+        this.addOrUpdateArticle()
       },
       queryTag() {
         this.$ajax.get('/tag/select').then((response) => {
@@ -131,13 +133,17 @@
           if (ERR_OK === response.status) {
             if (response.data.statueCode === SUCCESS_CODE) {
               this.article = response.data.articleList[0]
-              console.log(this.article)
+              this.changeDisabled(this.article.articleSorts, this.sorts)
+              this.changeDisabled(this.article.articleTags, this.tags)
+              this.editor.txt.html(this.article.articleContent)
+              this.editorContent = this.article.articleContent
+              this.article.articleComment === 1 ? this.comment = true : this.comment = false
             }
           }
         })
       },
-      addArticle() {
-        this.$ajax.post('/article/add', this.article).then((response) => {
+      addOrUpdateArticle() {
+        this.$ajax.post(this.url, this.article).then((response) => {
           if (ERR_OK === response.status) {
             if (response.data.statueCode === SUCCESS_CODE) {
               this.$message({
@@ -200,6 +206,9 @@
             return
           }
         })
+      },
+      back() {
+        this.$router.push('/articleManage')
       }
     },
     computed: {
@@ -217,14 +226,14 @@
       }
     },
     mounted() {
-      const editor = new E(this.$refs.editor)
-      editor.customConfig.onchange = (html) => {
+      this.editor = new E(this.$refs.editor)
+      this.editor.customConfig.onchange = (html) => {
         this.editorContent = html
       }
-      editor.customConfig.zIndex = 100
-      editor.customConfig.uploadImgServer = `http:${process.env.BASE_URL}/uploadImg`
-      editor.customConfig.uploadFileName = 'uploadImg'
-      editor.create()
+      this.editor.customConfig.zIndex = 100
+      this.editor.customConfig.uploadImgServer = `http:${process.env.BASE_URL}/uploadImg`
+      this.editor.customConfig.uploadFileName = 'uploadImg'
+      this.editor.create()
     }
   }
 </script>
