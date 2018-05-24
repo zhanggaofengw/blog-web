@@ -10,7 +10,7 @@
         </el-input>
       </div>
     </el-col>
-    <el-button type="primary" size="small" class="fr add" @click="add()">{{buttonName}}</el-button>
+    <el-button type="primary" size="small" class="fr addBtn" @click="add()">{{buttonName}}</el-button>
   </div>
 </template>
 
@@ -41,7 +41,7 @@
 </script>
 
 <style>
-  .add {
+  .addBtn {
     margin: 10px 0;
   }
 </style>

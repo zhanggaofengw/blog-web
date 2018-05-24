@@ -79,7 +79,8 @@
 <script type="text/ecmascript-6">
   import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
   import PageQueryHeader from '../../base/page-query-header/page-query-header.vue'
-  import {ERR_OK, SUCCESS_CODE, PAGESIZE} from '../../common/js/config'
+  import {PAGESIZE} from '../../common/js/config'
+  import {queryAll, deleteOne} from '../../common/js/server'
   const SORT = 1
   const TAG = 2
   export default {
@@ -108,13 +109,11 @@
         if (!this.param) {
           this.param = ''
         }
-        this.$ajax.get(`/article/query?param=${this.param}&currentPage=${this.currentPage}&pageSize=${this.pageSize}`).then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              this.articleList = response.data.articleList
-              this.pageCount = response.data.rows
-              console.log(this.articleList)
-            }
+        let url = `/article/query?param=${this.param}&currentPage=${this.currentPage}&pageSize=${this.pageSize}`
+        queryAll(url, this).then((response) => {
+          if (response) {
+            this.articleList = response.articleList
+            this.pageCount = response.rows
           }
         })
       },
@@ -125,41 +124,13 @@
         })
       },
       deleteArticle(id) {
-        this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$ajax.get(`/article/delete?id=${id}`).then((response) => {
-            if (ERR_OK === response.status) {
-              if (response.data.statueCode === SUCCESS_CODE) {
-                this.queryArticleList()
-                this.$message({
-                  message: response.data.msg,
-                  type: 'success',
-                  duration: 1000
-                })
-              } else if (response.data.statueCode === ERROR_CODE) {
-                this.$message({
-                  message: response.data.msg,
-                  type: 'error',
-                  duration: 1000
-                })
-              }
-            } else {
-              this.$message({
-                message: '删除失败',
-                type: 'error',
-                duration: 1000
-              })
-            }
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
+        let url = `/article/delete?id=${id}`
+        let title = '此操作将永久删除该文章, 是否继续?'
+        deleteOne(url, title, this).then((response) => {
+          if (response) {
+            this.queryArticleList()
+          }
+        })
       },
       addArticle() {
         this.$router.push('/publishArticles/add/null')

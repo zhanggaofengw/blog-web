@@ -35,7 +35,8 @@
           <span class="demonstration fl">选择{{category}}颜色</span>
           <el-color-picker v-model="tag.color"></el-color-picker>
         </div>
-        <el-button type="success" size="medium" :disabled="!tag.sortOrTagName || !tag.color" @click="addOrUpdateTag(tag.isAddOrUpdate)">
+        <el-button type="success" size="medium" :disabled="!tag.sortOrTagName || !tag.color"
+                   @click="addOrUpdateTag(tag.isAddOrUpdate)">
           保存{{category}}
         </el-button>
       </div>
@@ -51,7 +52,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false; addOrUpdateTag(updateTag.isAddOrUpdate)" :disabled="!updateTag.name || !updateTag.color">确
+        <el-button type="primary" @click="dialogFormVisible = false; addOrUpdateTag(updateTag.isAddOrUpdate)"
+                   :disabled="!updateTag.name || !updateTag.color">确
           定
         </el-button>
       </div>
@@ -64,6 +66,7 @@
   import {stringify} from 'qs'
   import {ERR_OK, SUCCESS_CODE, ERROR_CODE} from '../../common/js/config'
   import PageHeader from '../../base/page-header/page-header.vue'
+  import {deleteOne, addOrUpdate, queryAll} from '../../common/js/server'
   const SORT = 1
   const TAG = 2
   export default {
@@ -113,95 +116,54 @@
         this.tag.isAddOrUpdate = 'add'
       },
       addOrUpdateTag(isAddOrUpdate) {
-        let url = '/tag'
+        let url = ''
+        let data = {}
         if (isAddOrUpdate === 'add') {
-          url += `/add?${stringify(this.tag)}`
+          url = 'tag/add'
+          data = this.tag
         } else {
-          url += `/update?${stringify(this.updateTag)}`
+          url = 'tag/update'
+          data = this.updateTag
         }
-        this.$ajax.get(url).then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              if (isAddOrUpdate === 'add') {
-                this.show = false
-                this.tag = {
-                  color: '#2f353b'
-                }
-              } else {
-                this.dialogFormVisible = false
+        addOrUpdate(url, data, this).then((response) => {
+          if (response) {
+            if (isAddOrUpdate === 'add') {
+              this.show = false
+              this.tag = {
+                color: '#2f353b'
               }
-              this.queryTag()
-              this.$message({
-                message: response.data.msg,
-                type: 'success',
-                duration: 1000
-              })
-            } else if (response.data.statueCode === ERROR_CODE) {
-              this.$message({
-                message: response.data.msg,
-                type: 'error',
-                duration: 1000
-              })
+            } else {
+              this.dialogFormVisible = false
             }
-          } else {
-            this.$message({
-              message: '新增失败',
-              type: 'error',
-              duration: 1000
-            })
+            this.queryTag()
           }
         })
       },
       queryTag() {
-        this.$ajax.get('/tag/select').then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              this.tagList = response.data.tagList
-            }
+        let url = '/tag/select'
+        queryAll(url, this).then((response) => {
+          if (response) {
+            this.tagList = response.tagList
           }
         })
       },
-      deleteTag(id) {
-        this.$ajax.get(`/tag/delete?id=${id}`).then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              this.queryTag()
-              this.$message({
-                message: response.data.msg,
-                type: 'success',
-                duration: 1000
-              })
-            } else if (response.data.statueCode === ERROR_CODE) {
-              this.$message({
-                message: response.data.msg,
-                type: 'error',
-                duration: 1000
-              })
-            }
-          } else {
-            this.$message({
-              message: '删除失败',
-              type: 'error',
-              duration: 1000
-            })
+      deleteTag(id, title) {
+        let url = `/tag/delete?id=${id}`
+        deleteOne(url, title, this).then((response) => {
+          if (response) {
+            this.queryTag()
           }
         })
       },
       handleClose(item) {
         let titleName = ''
-        if (item.category == SORT){
+        if (item.category == SORT) {
           titleName = '分类'
         } else {
           titleName = '列表'
         }
-        this.$confirm(`确定要删除${item.name}${titleName}?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.deleteTag(item._id)
-        }).catch(() => {
-        })
+        let title = `此操作将永久删除该${titleName}, 是否继续?`
+        this.deleteTag(item._id, title)
       },
       filterLabel(type) {
         let self = this

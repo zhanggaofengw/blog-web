@@ -75,6 +75,7 @@
   import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
   import {ERR_OK, SUCCESS_CODE, ERROR_CODE} from '../../common/js/config'
   import {stringify} from 'qs'
+  import {addOrUpdate, queryAll} from '../../common/js/server'
   import E from 'wangeditor'
   const SORT = 1
   const TAG = 2
@@ -120,53 +121,30 @@
         this.addOrUpdateArticle()
       },
       queryTag() {
-        this.$ajax.get('/tag/select').then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              this.tagList = response.data.tagList
-            }
+        let url = '/tag/select'
+        queryAll(url, this).then((response) => {
+          if (response) {
+            this.tagList = response.tagList
           }
         })
       },
       queryArticle(id) {
-        this.$ajax.get(`/article/query?id=${id}`).then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              this.article = response.data.articleList[0]
-              this.changeDisabled(this.article.articleSorts, this.sorts)
-              this.changeDisabled(this.article.articleTags, this.tags)
-              this.editor.txt.html(this.article.articleContent)
-              this.editorContent = this.article.articleContent
-              this.article.articleComment === 1 ? this.comment = true : this.comment = false
-            }
+        let url = `/article/query?id=${id}`
+        queryAll(url, this).then((response) => {
+          if (response) {
+            this.article = response.articleList[0]
+            this.changeDisabled(this.article.articleSorts, this.sorts)
+            this.changeDisabled(this.article.articleTags, this.tags)
+            this.editor.txt.html(this.article.articleContent)
+            this.editorContent = this.article.articleContent
+            this.article.articleComment === 1 ? this.comment = true : this.comment = false
           }
         })
       },
       addOrUpdateArticle() {
-        this.$ajax.post(this.url, this.article).then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              this.$message({
-                message: response.data.msg,
-                type: 'success',
-                duration: 1000,
-                onClose: () => {
-                  this.$router.push('/articleManage')
-                }
-              })
-            } else if (response.data.statueCode === ERROR_CODE) {
-              this.$message({
-                message: response.data.msg,
-                type: 'error',
-                duration: 1000
-              })
-            }
-          } else {
-            this.$message({
-              message: '添加文章失败',
-              type: 'error',
-              duration: 1000
-            })
+        addOrUpdate(this.url, this.article, this).then((response) => {
+          if (response) {
+            this.$router.push('/articleManage')
           }
         })
       },

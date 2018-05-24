@@ -72,6 +72,7 @@
   import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
   import PageQueryHeader from '../../base/page-query-header/page-query-header.vue'
   import {ERR_OK, SUCCESS_CODE, ERROR_CODE, PAGESIZE} from '../../common/js/config'
+  import {queryAll, deleteOne, addOrUpdate} from '../../common/js/server'
   import crypto from 'crypto'
   import {stringify} from 'qs'
   export default {
@@ -141,9 +142,17 @@
             if (this.type === 'add') {
               let md5 = crypto.createHash('md5')
               let password = md5.update(this.user.password).digest('hex')
-              this.url = `/user/add?name=${this.user.name}&password=${password}`
+              this.url = '/user/add'
+              this.data = {
+                name: this.user.name,
+                password: password
+              }
             } else {
-              this.url = `/user/update?name=${this.user.name}&id=${this.user._id}`
+              this.url = '/user/update'
+              this.data = {
+                name: this.user.name,
+                id: this.user._id
+              }
             }
             this.updateOrAddUser()
           } else {
@@ -155,42 +164,20 @@
         this.$refs.user.resetFields()
       },
       updateOrAddUser() {
-        this.$ajax.get(this.url).then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              this.$refs.user.resetFields()
-              this.dialogFormVisible = false
-              this.$message({
-                message: response.data.msg,
-                type: 'success',
-                duration: 1000,
-                onClose: () => {
-                  this.queryUsers()
-                }
-              })
-            } else if (response.data.statueCode === ERROR_CODE) {
-              this.$message({
-                message: response.data.msg,
-                type: 'error',
-                duration: 1000
-              })
-            }
-          } else {
-            this.$message({
-              message: '失败',
-              type: 'error',
-              duration: 1000
-            })
+        addOrUpdate(this.url, this.data, this).then((response) => {
+          if (response) {
+            this.$refs.user.resetFields()
+            this.dialogFormVisible = false
+            this.queryUsers()
           }
         })
       },
       queryUser(id) {
-        this.$ajax.get(`/user/queryOne?id=${id}`).then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              this.user = response.data.user
-              console.log(this.user)
-            }
+        let url = `/user/queryOne?id=${id}`
+        queryAll(url, this).then((response) => {
+          if (response) {
+            this.user = response.user
+            console.log(this.user)
           }
         })
       },
@@ -198,52 +185,22 @@
         if (!this.param) {
           this.param = ''
         }
-        this.$ajax.get(`/user/query?param=${this.param}&currentPage=${this.currentPage}&pageSize=${this.pageSize}`).then((response) => {
-          if (ERR_OK === response.status) {
-            if (response.data.statueCode === SUCCESS_CODE) {
-              this.userList = response.data.userList
-              this.pageCount = response.data.rows
-              console.log(this.userList)
-            }
+        let url = `/user/query?param=${this.param}&currentPage=${this.currentPage}&pageSize=${this.pageSize}`
+        queryAll(url, this).then((response) => {
+          if (response) {
+            this.userList = response.userList
+            this.pageCount = response.rows
           }
         })
       },
       deleteUser(id) {
-        this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$ajax.get(`/user/delete?id=${id}`).then((response) => {
-            if (ERR_OK === response.status) {
-              if (response.data.statueCode === SUCCESS_CODE) {
-                this.queryUsers()
-                this.$message({
-                  message: response.data.msg,
-                  type: 'success',
-                  duration: 1000
-                })
-              } else if (response.data.statueCode === ERROR_CODE) {
-                this.$message({
-                  message: response.data.msg,
-                  type: 'error',
-                  duration: 1000
-                })
-              }
-            } else {
-              this.$message({
-                message: '删除失败',
-                type: 'error',
-                duration: 1000
-              })
-            }
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
+        let url = `/user/delete?id=${id}`
+        let title = '此操作将永久删除该用户, 是否继续?'
+        deleteOne(url, title, this).then((response) => {
+          if (response) {
+            this.queryUsers()
+          }
+        })
       },
       handleCurrentChange(page) {
         this.currentPage = page
