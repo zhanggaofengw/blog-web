@@ -18,8 +18,13 @@ const Label = (resolve) => {
     resolve(module)
   })
 }
-const PublishArticles= (resolve) => {
+const PublishArticles = (resolve) => {
   import('@/components/publish-articles/publish-articles').then((module) => {
+    resolve(module)
+  })
+}
+const UserManage = (resolve) => {
+  import('@/components/user-Manage/user-Manage').then((module) => {
     resolve(module)
   })
 }
@@ -44,9 +49,14 @@ const routes = [
     meta: {title: '分类/标签管理'}
   },
   {
+    path: '/userManage',
+    component: UserManage,
+    meta: {title: '用户管理'}
+  },
+  {
     path: '/publishArticles/:addOrUpdate/:id',
     component: PublishArticles,
-    meta: {title: '发布文章',activeMenu:'/articleManage'}
+    meta: {title: '发布文章', activeMenu: '/articleManage'}
   }
 ]
 const router = new Router({

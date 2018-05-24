@@ -6,9 +6,6 @@
       <el-menu-item :index="'/articleManage'">
         <span slot="title">文章管理</span>
       </el-menu-item>
-      <el-menu-item index="3">
-        <span slot="title">用户管理</span>
-      </el-menu-item>
       <el-menu-item :index="'/label'">
         <span slot="title">分类/标签</span>
       </el-menu-item>
@@ -17,7 +14,7 @@
           <span slot="title">系统管理</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="1-1">选项</el-menu-item>
+          <el-menu-item :index="'/userManage'">用户管理</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>

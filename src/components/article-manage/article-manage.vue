@@ -1,18 +1,7 @@
 <template>
   <div class="article right-container" ref="rightContainer">
-    <el-col :sm="4" :xs="24">
-      <page-header :page-title="$route.meta.title"></page-header>
-    </el-col>
-    <el-col :sm="{span:16, offset:4}" :xs="24">
-      <div class="queryArticle">
-        <el-input placeholder="请输入文章标题" v-model="param" class="input-with-select" size="medium">
-          <el-button slot="append" icon="el-icon-search" @click="currentPage=1;queryArticleList()"></el-button>
-        </el-input>
-      </div>
-    </el-col>
-    <el-button type="primary" size="small" class="fr addArticle" @click="addArticle()">添加文章</el-button>
-    <div>
-    </div>
+    <page-query-header :placeholder="placeholder" :buttonName="buttonName"
+                       @query="query" @add="addArticle"></page-query-header>
     <el-table
       :data="articleList"
       border
@@ -66,7 +55,8 @@
       >
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="small" @click="edit(scope.row._id)">编辑</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="small">删除</el-button>
+          <el-button type="danger" icon="el-icon-delete" size="small" @click="deleteArticle(scope.row._id)">删除
+          </el-button>
           <el-button type="warning" icon="el-icon-search" size="small"
                      @click="preview(scope.row.articleContent, scope.row.articleTitle)">预览
           </el-button>
@@ -88,7 +78,7 @@
 
 <script type="text/ecmascript-6">
   import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
-  import PageHeader from '../../base/page-header/page-header.vue'
+  import PageQueryHeader from '../../base/page-query-header/page-query-header.vue'
   import {ERR_OK, SUCCESS_CODE, PAGESIZE} from '../../common/js/config'
   const SORT = 1
   const TAG = 2
@@ -97,17 +87,27 @@
     data() {
       return {
         articleList: [],
-        param: '',
         currentPage: 1,
-        pageCount: 0
+        pageCount: 0,
+        param: ''
       }
     },
     created () {
+      this.placeholder = '请输入文章标题'
+      this.buttonName = '添加文章'
       this.pageSize = PAGESIZE
       this.queryArticleList()
     },
     methods: {
+      query(param) {
+        this.currentPage = 1
+        this.param = param
+        this.queryArticleList()
+      },
       queryArticleList() {
+        if (!this.param) {
+          this.param = ''
+        }
         this.$ajax.get(`/article/query?param=${this.param}&currentPage=${this.currentPage}&pageSize=${this.pageSize}`).then((response) => {
           if (ERR_OK === response.status) {
             if (response.data.statueCode === SUCCESS_CODE) {
@@ -120,8 +120,46 @@
       },
       preview(articleContent, articleTitle) {
         this.$alert(articleContent, articleTitle, {
+          customClass: 'previewBox',
           dangerouslyUseHTMLString: true
         })
+      },
+      deleteArticle(id) {
+        this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$ajax.get(`/article/delete?id=${id}`).then((response) => {
+            if (ERR_OK === response.status) {
+              if (response.data.statueCode === SUCCESS_CODE) {
+                this.queryArticleList()
+                this.$message({
+                  message: response.data.msg,
+                  type: 'success',
+                  duration: 1000
+                })
+              } else if (response.data.statueCode === ERROR_CODE) {
+                this.$message({
+                  message: response.data.msg,
+                  type: 'error',
+                  duration: 1000
+                })
+              }
+            } else {
+              this.$message({
+                message: '删除失败',
+                type: 'error',
+                duration: 1000
+              })
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       addArticle() {
         this.$router.push('/publishArticles/add/null')
@@ -135,24 +173,16 @@
       }
     },
     components: {
-      PageHeader
+      PageQueryHeader
     }
   }
 </script>
 
 <style>
-  .addArticle {
-    margin: 10px 0;
-  }
 
-  .el-message-box {
+  .previewBox.el-message-box {
     width: 80%;
     min-width: 420px;
-  }
-
-  .el-pagination {
-    margin-top: 10px;
-    text-align: right;
   }
 
   .el-table__body .sort, .el-table__body .tag {

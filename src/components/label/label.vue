@@ -78,7 +78,7 @@
         category: '',
         placeholderName: '',
         tagList: [],
-        dialogFormVisible: false,
+        dialogFormVisible: false
       }
     },
     created() {
