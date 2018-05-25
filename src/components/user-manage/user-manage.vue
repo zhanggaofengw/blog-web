@@ -156,9 +156,9 @@
             }
             this.updateOrAddUser()
           } else {
-            return false;
+            return false
           }
-        });
+        })
       },
       close() {
         this.$refs.user.resetFields()
