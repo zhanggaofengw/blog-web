@@ -16,7 +16,6 @@
     </form>
   </div>
 </template>
-
 <script type="text/ecmascript-6">
   import crypto from 'crypto'
   import {stringify} from 'qs'
@@ -86,12 +85,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-image: url('./bg.jpg');
+    background-attachment: fixed;
+    background-size: cover;
   }
 
   .login-i {
     width: 300px;
     padding: 40px;
-    background: rgba(87, 250, 255, .8);
+    background: rgba(28, 214, 189, .8);
     border-radius: 5px;
   }
 
@@ -112,4 +114,5 @@
   .login-i .el-button {
     width: 100%;
   }
+
 </style>

@@ -10,7 +10,6 @@ axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   config => {
     // const token = getCookie('session') // 获取Cookie
-    config.data = config.data
     // if (token) {
     //  config.params = {'token': token} // 后台接收的参数，后面我们将说明后台如何接收
     // }

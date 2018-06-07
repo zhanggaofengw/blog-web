@@ -19,6 +19,11 @@ export const marginMixin = {
       } else {
         this.$refs.rightContainer.style.marginLeft = '200px'
       }
+      if (this.$route.path === '/visit') {
+        setTimeout(() => {
+          this.echarts.init(document.getElementById('main')).resize()
+        }, 300)
+      }
     }
   },
   watch: {

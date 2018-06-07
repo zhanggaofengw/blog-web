@@ -28,6 +28,11 @@ const UserManage = (resolve) => {
     resolve(module)
   })
 }
+const Visit = (resolve) => {
+  import('@/components/visit/visit').then((module) => {
+    resolve(module)
+  })
+}
 const routes = [
   {
     path: '',
@@ -52,6 +57,11 @@ const routes = [
     path: '/userManage',
     component: UserManage,
     meta: {title: '用户管理'}
+  },
+  {
+    path: '/visit',
+    component: Visit,
+    meta: {title: '访问统计'}
   },
   {
     path: '/publishArticles/:addOrUpdate/:id',

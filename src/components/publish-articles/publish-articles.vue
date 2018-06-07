@@ -45,6 +45,8 @@
           </el-tag>
         </div>
       </div>
+      <el-input v-model="article.articleKeywords" placeholder="请输入文章关键字" class="article-keywords"></el-input>
+      <el-input v-model="article.articleDescription" placeholder="请输入文章摘要" class="article-description"></el-input>
     </div>
     <div class="article">
       <div ref="editor" style="text-align:left"></div>
@@ -229,7 +231,7 @@
     color: #fff;
   }
 
-  .article-tag, .article-sort {
+  .article-tag, .article-sort, .article-footer, .article-keywords, .article-description {
     margin: 10px 0;
   }
 
@@ -237,7 +239,4 @@
     width: 300px;
   }
 
-  .article-footer {
-    margin: 10px 0;
-  }
 </style>

@@ -15,13 +15,14 @@
         </template>
         <el-menu-item-group>
           <el-menu-item :index="'/userManage'">用户管理</el-menu-item>
+          <el-menu-item :index="'/visit'">访问统计</el-menu-item>
+          <!--<el-menu-item :index="''">角色管理</el-menu-item>-->
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
   </div>
 </template>
-
-<script type="text/ecmascript-6">
+                                                                                                                                                                                            <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex'
   export default {
     data() {
@@ -31,11 +32,11 @@
       }
     },
     mounted() {
-      const that = this
       window.onresize = () => {
-        return (() => {
-          that.w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-        })()
+        this.w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+        if (this.$route.path === '/visit') {
+          this.echarts.init(document.getElementById('main')).resize()
+        }
       }
     },
     created() {

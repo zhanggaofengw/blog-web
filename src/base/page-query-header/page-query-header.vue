@@ -41,7 +41,7 @@
 </script>
 
 <style>
-  .addBtn {
+  button.addBtn {
     margin: 10px 0;
   }
 </style>

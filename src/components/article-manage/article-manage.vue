@@ -39,6 +39,15 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="articleKeywords"
+        label="关键字">
+      </el-table-column>
+      <el-table-column
+        prop="articleDescription"
+        label="摘要"
+        max-width="200">
+      </el-table-column>
+      <el-table-column
         prop="articleType"
         label="发布状态"
         align="center">
