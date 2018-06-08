@@ -6,8 +6,8 @@ import router from './router'
 import axios from './common/js/http'
 import store from './store'
 import ElementUI from 'element-ui'
-// 引入 ECharts 主模块
-import echarts from 'echarts'
+// 引入 ECharts 基础模块
+import echarts from 'echarts/lib/echarts'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/common/css/style.css'
 Vue.use(ElementUI)
