@@ -1,4 +1,6 @@
 const state = {
-  collapse: false
+  collapse: false,
+  roleMenu: [],
+  routes: []
 }
 export default state

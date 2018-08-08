@@ -1,5 +1,5 @@
 <template>
-  <div class="article right-container" ref="rightContainer">
+  <div class="article">
     <page-query-header :placeholder="placeholder" :buttonName="buttonName"
                        @query="query" @add="addArticle"></page-query-header>
     <el-table
@@ -82,18 +82,17 @@
       v-if="pageCount>0&&pageCount>pageSize"
     >
     </el-pagination>
+    <router-view></router-view>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
   import PageQueryHeader from '../../base/page-query-header/page-query-header.vue'
   import {PAGESIZE} from '../../common/js/config'
   import {queryAll, deleteOne} from '../../common/js/server'
   const SORT = 1
   const TAG = 2
   export default {
-    mixins: [marginMixin],
     data() {
       return {
         articleList: [],
@@ -142,10 +141,10 @@
         })
       },
       addArticle() {
-        this.$router.push('/publishArticles/add/null')
+        this.$router.push('/home/articleManage/add/null')
       },
       edit(id) {
-        this.$router.push(`/publishArticles/update/${id}`)
+        this.$router.push(`/home/articleManage/update/${id}`)
       },
       handleCurrentChange(page) {
         this.currentPage = page
@@ -159,6 +158,9 @@
 </script>
 
 <style>
+  .article {
+    position: relative;
+  }
 
   .previewBox.el-message-box {
     width: 80%;

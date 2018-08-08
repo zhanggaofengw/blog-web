@@ -1,7 +1,7 @@
 <template>
-  <div class="publish-article right-container" ref="rightContainer">
+  <div class="publish-article">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/articleManage' }">文章管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/home/articleManage' }">文章列表</el-breadcrumb-item>
       <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
     </el-breadcrumb>
     <form name="articleForm"></form>
@@ -74,7 +74,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
   import {ERR_OK, SUCCESS_CODE, ERROR_CODE} from '../../common/js/config'
   import {stringify} from 'qs'
   import {addOrUpdate, queryAll} from '../../common/js/server'
@@ -84,7 +83,6 @@
   const DRAFT = 0 //存为草稿
   const SAVE = 1 //保存
   export default {
-    mixins: [marginMixin],
     data() {
       return {
         article: {
@@ -146,7 +144,7 @@
       addOrUpdateArticle() {
         addOrUpdate(this.url, this.article, this).then((response) => {
           if (response) {
-            this.$router.push('/articleManage')
+            this.$router.push('/home/articleManage')
           }
         })
       },
@@ -188,7 +186,7 @@
         })
       },
       back() {
-        this.$router.push('/articleManage')
+        this.$router.push('/home/articleManage')
       }
     },
     computed: {
@@ -219,6 +217,15 @@
 </script>
 
 <style>
+  .publish-article {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #f5f5f5;
+  }
+
   .el-breadcrumb {
     padding: 10px 0;
   }

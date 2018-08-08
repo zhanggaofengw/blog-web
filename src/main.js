@@ -15,7 +15,7 @@ Vue.prototype.$ajax = axios
 Vue.prototype.echarts = echarts
 Vue.config.productionTip = false
 router.beforeEach((to, from, next) => {
-  window.document.title = to.meta.title
+  window.document.title = to.name
   if ((!sessionStorage.getItem('userName') || sessionStorage.getItem('userName') === ' ') && to.path !== '/login') {
     next('/login')
   } else {

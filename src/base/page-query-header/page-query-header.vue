@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-col :sm="4" :xs="24">
-      <page-header :page-title="$route.meta.title"></page-header>
+      <page-header :page-title="$route.name"></page-header>
     </el-col>
     <el-col :sm="{span:16, offset:4}" :xs="24">
       <div class="query">

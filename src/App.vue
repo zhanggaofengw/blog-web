@@ -1,20 +1,39 @@
 <template>
-    <div id="app">
-        <blog-header v-if="$route.path !== '/login' && $route.path !== '/'"></blog-header>
-        <left-menu v-if="$route.path !== '/login' && $route.path !== '/'"></left-menu>
-        <router-view></router-view>
-    </div>
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
-<script>
-    import LeftMenu from './components/left-menu/left-menu.vue'
-    import BlogHeader from './components/header/header.vue'
-    export default {
-        components: {
-            LeftMenu,
-            BlogHeader
-        }
+<script type="text/ecmascript-6">
+  import {mapGetters, mapActions} from 'vuex'
+  import {queryAll} from './common/js/server'
+
+  export default {
+    created() {
+      if (sessionStorage.getItem('userId') && this.roleMenu.length === 0) {
+        let url = `/permission/queryMenu?id=${sessionStorage.getItem('userId')}`
+        queryAll(url, this).then((response) => {
+          if (response) {
+            this.addRouterAndMenu({
+              menuList: response.menuList
+            })
+            this.$router.addRoutes(this.routes)
+          }
+        })
+      }
+    },
+    methods: {
+      ...mapActions([
+        'addRouterAndMenu'
+      ])
+    },
+    computed: {
+      ...mapGetters([
+        'roleMenu',
+        'routes'
+      ])
     }
+  }
 </script>
 
 <style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="userManage right-container" ref="rightContainer">
+  <div class="userManage">
     <page-query-header :placeholder="placeholder" :buttonName="buttonName" @query="query"
                        @add="updateOrAdd()"></page-query-header>
     <el-table
@@ -58,6 +58,15 @@
           <el-input auto-complete="off" type="password" size="medium" v-model="user.password"
                     placeholder="请输入6-20位且含有数字和字母的密码"></el-input>
         </el-form-item>
+        <el-form-item label="角色菜单" label-width="100px" prop="role">
+          <el-checkbox-group
+            v-model="checkedRole"
+          >
+            <div v-for="role in roleList">
+              <el-checkbox  :label="role.id" :key="role.id">{{role.name}}</el-checkbox>
+            </div>
+          </el-checkbox-group>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -69,14 +78,12 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
   import PageQueryHeader from '../../base/page-query-header/page-query-header.vue'
   import {ERR_OK, SUCCESS_CODE, ERROR_CODE, PAGESIZE} from '../../common/js/config'
   import {queryAll, deleteOne, addOrUpdate} from '../../common/js/server'
   import crypto from 'crypto'
   import {stringify} from 'qs'
   export default {
-    mixins: [marginMixin],
     data() {
       let validatePassword = (rule, value, callback) => {
         if (this.type === 'add') {
@@ -94,6 +101,13 @@
           callback();
         }
       }
+      let validateRole = (rule, value, callback) => {
+        if (this.checkedRole.length>0) {
+          callback();
+        } else {
+          callback(new Error('至少选择一个角色'))
+        }
+      }
       return {
         userList: [],
         user: {},
@@ -102,12 +116,17 @@
         param: '',
         dialogFormVisible: false,
         type: '',
+        checkedRole: [],
+        roleList: [],
         rules: {
           name: [
             {required: true, message: '请输入用户名'}
           ],
           password: [
             {required: true, validator: validatePassword}
+          ],
+          role: [
+            {required: true, validator: validateRole}
           ]
         }
       }
@@ -118,6 +137,7 @@
       this.buttonName = '添加用户'
       this.pageSize = PAGESIZE
       this.queryUsers()
+      this.queryRoleList()
     },
     methods: {
       query(param) {
@@ -145,13 +165,15 @@
               this.url = '/user/add'
               this.data = {
                 name: this.user.name,
-                password: password
+                password: password,
+                checkedRole: this.checkedRole
               }
             } else {
               this.url = '/user/update'
               this.data = {
                 name: this.user.name,
-                id: this.user._id
+                id: this.user._id,
+                checkedRole: this.checkedRole
               }
             }
             this.updateOrAddUser()
@@ -161,11 +183,13 @@
         })
       },
       close() {
+        this.checkedRole = []
         this.$refs.user.resetFields()
       },
       updateOrAddUser() {
         addOrUpdate(this.url, this.data, this).then((response) => {
           if (response) {
+            this.checkedRole = []
             this.$refs.user.resetFields()
             this.dialogFormVisible = false
             this.queryUsers()
@@ -177,6 +201,7 @@
         queryAll(url, this).then((response) => {
           if (response) {
             this.user = response.user
+            this.checkedRole = response.user.checkedRole
             console.log(this.user)
           }
         })
@@ -190,6 +215,14 @@
           if (response) {
             this.userList = response.userList
             this.pageCount = response.rows
+          }
+        })
+      },
+      queryRoleList() {
+        let url = '/permission/query'
+        queryAll(url, this).then((response) => {
+          if (response) {
+            this.roleList = response.roleList
           }
         })
       },

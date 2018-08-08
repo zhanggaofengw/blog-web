@@ -1,16 +1,11 @@
 <template>
-  <div class="right-container visit" ref="rightContainer">
     <div id="main"></div>
-  </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
-  import PageQueryHeader from '../../base/page-query-header/page-query-header.vue'
   import 'echarts/map/js/china.js'
   import {queryAll} from '../../common/js/server'
   export default {
-    mixins: [marginMixin],
     data () {
       return {
         visitList: [],
@@ -180,22 +175,9 @@
           }
         })
       }
-    },
-    components: {
-      PageQueryHeader
     }
   }
 </script>
 
 <style>
-  .visit {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
-  .visit #main{
-    height: 100%;
-  }
 </style>

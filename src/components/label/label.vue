@@ -1,6 +1,6 @@
 <template>
-  <div class="label right-container" ref="rightContainer">
-    <page-header :page-title="$route.meta.title"></page-header>
+  <div class="label">
+    <page-header :page-title="$route.name"></page-header>
     <div class="label-container clearFloat">
       <div class="sort fl">
         <div class="item-header">
@@ -58,11 +58,16 @@
         </el-button>
       </div>
     </el-dialog>
+    <!--<transition name="ball" v-if="false">-->
+      <!--<div class="ball" v-if="ball">-->
+        <!--<span></span>-->
+      <!--</div>-->
+    <!--</transition>-->
+    <!--<button @click="ball===true?ball=false:ball=true"  v-if="false">click</button>-->
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {marginMixin} from '../../common/js/mixin/setRightContainerMargin'
   import {stringify} from 'qs'
   import {ERR_OK, SUCCESS_CODE, ERROR_CODE} from '../../common/js/config'
   import PageHeader from '../../base/page-header/page-header.vue'
@@ -70,7 +75,6 @@
   const SORT = 1
   const TAG = 2
   export default {
-    mixins: [marginMixin],
     data() {
       return {
         tag: {
@@ -81,7 +85,8 @@
         category: '',
         placeholderName: '',
         tagList: [],
-        dialogFormVisible: false
+        dialogFormVisible: false,
+        ball: true
       }
     },
     created() {
@@ -187,6 +192,30 @@
 </script>
 
 <style>
+  .ball {
+    position: fixed;
+    left: 250px;
+    top: 300px;
+    z-index: 200;
+    transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41); /*贝塞尔曲线*/
+  }
+
+  .ball span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: red;
+    transition: all  0.4s linear;
+  }
+
+  .ball-enter, .ball-leave-to {
+    transform: translateY(200px);
+  }
+  .ball-enter span, .ball-leave-to span{
+    transform: translateX(-250px);
+  }
+
   .label-container .tag {
     width: 49%;
   }

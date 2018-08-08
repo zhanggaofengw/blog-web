@@ -20,6 +20,7 @@
   import crypto from 'crypto'
   import {stringify} from 'qs'
   import {ERR_OK, SUCCESS_CODE, ERROR_CODE} from '../../common/js/config'
+  import {mapActions, mapGetters} from 'vuex'
   export default {
     data() {
       return {
@@ -44,7 +45,12 @@
           if (ERR_OK === response.status) {
             if (response.data.statueCode === SUCCESS_CODE) {
               sessionStorage.setItem('userName', this.loginForm.name)
-              this.$router.push('/articleManage')
+              sessionStorage.setItem('userId', response.data.user._id)
+              this.addRouterAndMenu({
+                menuList: response.data.user.menuList
+              })
+              this.$router.addRoutes(this.routes)
+              this.$router.push('/home')
             } else if (response.data.statueCode === ERROR_CODE) {
               this.getCaptcha()
               this.$message({
@@ -70,7 +76,15 @@
             this.svgCaptcha = response.data
           }
         })
-      }
+      },
+      ...mapActions([
+        'addRouterAndMenu'
+      ])
+    },
+    computed: {
+      ...mapGetters([
+        'routes'
+      ])
     }
   }
 </script>

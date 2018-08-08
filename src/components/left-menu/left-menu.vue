@@ -1,28 +1,20 @@
 <template>
   <div class="left-menu">
     <el-menu class="el-menu-vertical-demo" :collapse="collapse"
-             :default-active="defaultActive" :router="true"
+             :default-active="$route.path" :router="true"
              background-color="#303133" text-color="#ffffff">
-      <el-menu-item :index="'/articleManage'">
-        <span slot="title">文章管理</span>
-      </el-menu-item>
-      <el-menu-item :index="'/label'">
-        <span slot="title">分类/标签</span>
-      </el-menu-item>
-      <el-submenu index="5">
+      <el-submenu :index="menu.name" v-for="menu, index in roleMenu">
         <template slot="title">
-          <span slot="title">系统管理</span>
+          <span slot="title">{{menu.name}}</span>
         </template>
-        <el-menu-item-group>
-          <el-menu-item :index="'/userManage'">用户管理</el-menu-item>
-          <el-menu-item :index="'/visit'">访问统计</el-menu-item>
-          <!--<el-menu-item :index="''">角色管理</el-menu-item>-->
+        <el-menu-item-group v-for="subMenu, index in menu.subMenu">
+          <el-menu-item :index="subMenu.indexPath">{{subMenu.name}}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
   </div>
 </template>
-                                                                                                                                                                                            <script type="text/ecmascript-6">
+<script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex'
   export default {
     data() {
@@ -53,21 +45,16 @@
     },
     computed: {
       ...mapGetters([
-        'collapse'
-      ]),
-      defaultActive () {
-        return this.$route.path.lastIndexOf('/') === 0 ? this.$route.path : this.$route.meta.activeMenu
-      }
+        'collapse',
+        'roleMenu'
+      ])
     },
     watch: {
       collapse() {
-        if ((this.w <= 992 && !this.collapse) || (this.w > 992 && this.collapse)) {
-          this.flag = true
-        } else {
-          this.flag = false
-        }
+        this.flag = ((this.w <= 992 && !this.collapse) || (this.w > 992 && this.collapse))
       },
       w() {
+        this.echarts.init(document.getElementById('main')).resize()
         if (this.flag) {
           return
         }
